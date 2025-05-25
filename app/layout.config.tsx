@@ -35,7 +35,7 @@ import HackathonsBanner from '@/public/nav-banner/hackathons-banner.png';
 import Team1Banner from '@/public/nav-banner/local_events_team1.jpg';
 import L1ToolboxPreview from '@/public/nav-banner/l1-toolbox-preview.png';
 import { SiGithub } from '@icons-pack/react-simple-icons';
-import { UserButton } from '@/components/login/user-button/UserButton';
+//import { UserButton } from '@/components/login/user-button/UserButton';
 
 export const integrationsMenu: LinkItemType = {
   type: 'menu',
