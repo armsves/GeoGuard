@@ -24,21 +24,3 @@ export default function Layout({
     </SessionProvider>
   );
 }
-
-function RedirectIfNewUser() {
-  const { data: session, status } = useSession();
-  const pathname = usePathname();
-  const router = useRouter();
-
-  useEffect(() => {
-    if (
-      status === "authenticated" &&
-      session.user.is_new_user &&
-      pathname !== "/profile"
-    ) {
-      router.replace("/profile");
-    }
-  }, [session, status, pathname, router]);
-
-  return null;
-}

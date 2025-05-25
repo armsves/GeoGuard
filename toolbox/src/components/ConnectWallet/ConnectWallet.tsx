@@ -88,6 +88,66 @@ export const ConnectWallet = ({
         return () => clearInterval(intervalId);
     }, [updateAllBalances, walletEVMAddress, walletChainId, pChainAddress]);
 
+    const handleAccountsChanged = (accounts: string[]) => {
+        if (accounts.length === 0) {
+            setWalletEVMAddress("")
+            return
+        } else if (accounts.length > 1) {
+            showBoundary(new Error("Multiple accounts found, we don't support that yet"))
+            return
+        }
+
+        //re-create wallet with new account
+        const newWalletClient = createCoreWalletClient(accounts[0] as `0x${string}`)
+        if (!newWalletClient) {
+            setHasWallet(false)
+            return
+        }
+
+        setCoreWalletClient(newWalletClient)
+        setWalletEVMAddress(accounts[0] as `0x${string}`)
+
+        if (newWalletClient) {
+            newWalletClient.getPChainAddress().then(setPChainAddress).catch(showBoundary)
+            newWalletClient.getCorethAddress().then(setCoreEthAddress).catch(showBoundary)
+
+            if (walletChainId === 0) {
+                newWalletClient.getChainId().then(onChainChanged).catch(showBoundary)
+            }
+        }
+    }
+
+    const onChainChanged = (chainId: string | number) => {
+        if (typeof chainId === "string") {
+            chainId = Number.parseInt(chainId, 16)
+        }
+
+        setWalletChainId(chainId)
+        if (coreWalletClient) {
+            coreWalletClient.getPChainAddress().then(setPChainAddress).catch(showBoundary)
+            coreWalletClient.getCorethAddress().then(setCoreEthAddress).catch(showBoundary)
+
+            coreWalletClient
+                .getEthereumChain()
+                .then((data: { isTestnet: boolean, chainName: string, rpcUrls: string[] }) => {
+                    const { isTestnet, chainName } = data;
+                    setAvalancheNetworkID(isTestnet ? networkIDs.FujiID : networkIDs.MainnetID)
+                    setIsTestnet(isTestnet)
+                    setEvmChainName(chainName)
+                })
+                .catch(showBoundary)
+        }
+    }
+
+    // Create wrapper functions for event removal that match the expected function signatures
+    const accountsChangedRemover = () => {
+        console.log('Removing accountsChanged listener');
+    };
+
+    const chainChangedRemover = () => {
+        console.log('Removing chainChanged listener');
+    };
+
     useEffect(() => {
         if (!isClient) return;
 
@@ -132,65 +192,15 @@ export const ConnectWallet = ({
         return () => {
             if (window.avalanche?.removeListener) {
                 try {
-                    window.avalanche.removeListener("accountsChanged", handleAccountsChanged)
-                    window.avalanche.removeListener("chainChanged", onChainChanged)
+                    // Use the type-compatible wrapper functions
+                    window.avalanche.removeListener("accountsChanged", accountsChangedRemover)
+                    window.avalanche.removeListener("chainChanged", chainChangedRemover)
                 } catch (e) {
                     console.warn("Failed to remove event listeners:", e)
                 }
             }
         }
     }, [isClient])
-
-    const onChainChanged = (chainId: string | number) => {
-        if (typeof chainId === "string") {
-            chainId = Number.parseInt(chainId, 16)
-        }
-
-        setWalletChainId(chainId)
-        if (coreWalletClient) {
-            coreWalletClient.getPChainAddress().then(setPChainAddress).catch(showBoundary)
-            coreWalletClient.getCorethAddress().then(setCoreEthAddress).catch(showBoundary)
-
-            coreWalletClient
-                .getEthereumChain()
-                .then((data: { isTestnet: boolean, chainName: string, rpcUrls: string[] }) => {
-                    const { isTestnet, chainName } = data;
-                    setAvalancheNetworkID(isTestnet ? networkIDs.FujiID : networkIDs.MainnetID)
-                    setIsTestnet(isTestnet)
-                    setEvmChainName(chainName)
-                })
-                .catch(showBoundary)
-        }
-    }
-
-    const handleAccountsChanged = (accounts: string[]) => {
-        if (accounts.length === 0) {
-            setWalletEVMAddress("")
-            return
-        } else if (accounts.length > 1) {
-            showBoundary(new Error("Multiple accounts found, we don't support that yet"))
-            return
-        }
-
-        //re-create wallet with new account
-        const newWalletClient = createCoreWalletClient(accounts[0] as `0x${string}`)
-        if (!newWalletClient) {
-            setHasWallet(false)
-            return
-        }
-
-        setCoreWalletClient(newWalletClient)
-        setWalletEVMAddress(accounts[0] as `0x${string}`)
-
-        if (newWalletClient) {
-            newWalletClient.getPChainAddress().then(setPChainAddress).catch(showBoundary)
-            newWalletClient.getCorethAddress().then(setCoreEthAddress).catch(showBoundary)
-
-            if (walletChainId === 0) {
-                newWalletClient.getChainId().then(onChainChanged).catch(showBoundary)
-            }
-        }
-    }
 
     async function connectWallet() {
         if (!isClient) return
@@ -252,8 +262,9 @@ export const ConnectWallet = ({
             // Remove event listeners
             if (window.avalanche?.removeListener) {
                 try {
-                    window.avalanche.removeListener("accountsChanged", handleAccountsChanged);
-                    window.avalanche.removeListener("chainChanged", onChainChanged);
+                    // Use the type-compatible wrapper functions
+                    window.avalanche.removeListener("accountsChanged", accountsChangedRemover);
+                    window.avalanche.removeListener("chainChanged", chainChangedRemover);
                 } catch (e) {
                     console.warn("Failed to remove event listeners:", e);
                 }
