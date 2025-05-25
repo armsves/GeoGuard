@@ -457,11 +457,12 @@ export const eventsMenu: LinkItemType = {
     },
   ],
 };
+/*
 const userMenu: LinkItemType = {
   type: 'custom',
   children: <UserButton />,
   secondary: true
-};
+};*/
 
 const github: LinkItemType = {
   type: 'icon',
