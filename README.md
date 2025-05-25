@@ -1,99 +1,124 @@
-# Avalanche Builder Hub
+# GeoGuard
 
 <div align="center">
-  <img src="public/logo.png?raw=true">
+  <img src="public/banner.png" alt="GeoGuard Banner" width="600">
 </div>
 
-## Overview
+GeoGuard is a decentralized platform for managing geographically-distributed validators on the Avalanche network. The platform enables users to mint validator tokens, lookup node IDs, and add validators to their subnet.
 
-This repository contains the contents for the Avalanche Builder Hub. It hosts the Docs, the
-Avalanche Academy and the integrations directory and is deployed at [https://build.avax.network/docs](https://build.avax.network/docs).
+## Features
 
-## Contributing
+### Main Interface
 
-Contributing to the Avalanche Builder Hub is a great way to get involved with the Avalanche dev community!
-Here's how to get started:
+- **Global Coverage**: Displays worldwide validator presence with flags from USA, EU, India, China, and Russia
+- **Token Management**: Mint new tokens with node IDs and lookup existing node IDs
+- **Validator Management**: Add and manage validators for your subnet
 
-### Quick Fixes
+### Contract Interactions
 
-For small typos or corrections, it is easy to contribute without the need to clone/fork the
-repository. Simply:
+- **Mint Tokens**: Create new tokens with specified recipient address, token ID, and node ID
+- **Node ID Lookup**: Query node IDs associated with specific tokens and accounts
+- **Validator Registration**: Complete process for adding validators to subnets
 
-- Find the page you want to edit.
-- Click the "Edit on GitHub" button in the right sidebar
-- Make the changes and Hit "Commit changes ..."
-- Edit the `commit message` to describe the change in 4 or less words, and include any extra details in the description
-- Hit "Sign off and commit changes" to raise a PR with your proposed changes
+## Pages and Components
 
-### New Content or Extensive Changes
+### Home Page
+- Global coverage display with country flags
+- Quick access buttons for all main features:
+  - Mint Token (Modal)
+  - Lookup Node ID (Modal) 
+  - Add Validator (Page)
 
-To propose new docs or large edits to our existing pages, follow the steps accordingly:
+### Validator Manager Page
+- Complete validator registration flow
+- Tools for managing subnet validators
+- Connects with Core wallet for transaction signing
 
-- **Ava Labs Github Organization Members:** Clone the repo
-  `git clone https://github.com/ava-labs/builders-hub.git`
-- **External Contributors:** Fork the repo via GitHub's GUI
-- Checkout to a new branch `git checkout -b <your-name/branch-name>`
-- Make changes on your branch
-- `git add .`
-- **`yarn dev` to ensure the build passes**
-- `git commit -m "some commit message"`
-- `git push`
-- Head to [GitHub](https://github.com/ava-labs/builders-hub) and open a new pull request
+### Modals
+- **Mint Modal**: Interface for minting new tokens with:
+  - Recipient address field (with "Use My Address" option)
+  - Optional token ID field
+  - Node ID field
+  - Success/error notifications via tooltips
 
-### Structure and Syntax
+- **Lookup Modal**: Interface for looking up node IDs with:
+  - Token ID field
+  - Account address field (with "Use My Address" option)
+  - Results display
+  - Error notifications via tooltips
 
-- Docs are located in the [docs](content/docs) directory.
-- Our style guide can be found [here](style-guide.md).
-- All image files should be included under [public images folder](public/images).
+## Recent Updates
 
-### Pull Request (PR)
+### UI Improvements
+- **Header Layout**: 
+  - Centered GeoGuard banner
+  - Logo links to homepage
+  - Improved wallet display with clear separation between balance and address
 
-- All PRs should be made against the `master` branch.
-- Following a successful build, Vercel will deploy your branch where you can verify your changes.
-- Once your PR is merged into `master`, [https://build.avax.network/docs/](https://build.avax.network/docs/) will be updated with your changes.
+- **Modal Interface**: 
+  - Replaced page-based interaction with modals for token operations
+  - Added tooltips for success/error notifications
+  - Improved input validation and feedback
+
+- **Navigation**:
+  - Added validator management page
+  - Streamlined contract interaction workflow
+  - Enhanced mobile responsiveness
+
+## Smart Contract Integration
+
+GeoGuard integrates with the following smart contract functions:
+
+```solidity
+// Mint a new token with a node ID
+function mint(address to, uint256 tokenId, string memory nodeId) external;
+
+// Get the node ID for a specific token
+function getNodeId(uint256 tokenId, address account) external view returns (string memory);
+
+// Get the last token ID
+function lastTokenId() external view returns (uint256);
+```
+
+## Technologies Used
+
+- **Frontend**: Next.js, React, TypeScript, Tailwind CSS
+- **Blockchain**: Avalanche, ethers.js v6
+- **UI Components**: Radix UI, Lucide Icons
+
+## Setup and Development
+
+### Prerequisites
+- Node.js 18+
+- Yarn
 
 ### Installation
 
+1. Clone the repository
+```bash
+git clone https://github.com/your-username/geoguard.git
+cd geoguard
+```
+
+2. Install dependencies
 ```bash
 yarn install
 ```
 
-### Local Development
-
+3. Start the development server
 ```bash
-yarn run start
+yarn dev
 ```
 
-This command starts a local development server and opens up a browser window. Most changes are
-reflected live without having to restart the server.
+4. Open [http://localhost:3000](http://localhost:3000) to view the application
 
-### Build
+## Production Build
 
 ```bash
-next build
+yarn build
+yarn start
 ```
 
-This command generates static content into the `.next` directory and can be rendered using Next server.
+## License
 
-## New or Missing Content Requests
-
-_The information I am requesting is related to a specific project, i.e. AvalancheGo, AvalancheNetworkRunner, etc.:_
-
-- Please raise a **Missing Docs Issue** in the GitHub repository of that project and
-  thoroughly detail your request. Include references to any existing pages relevant to your
-  request.
-
-_The information I am requesting is explanatory in nature and does not currently exist:_
-
-- Please open a new [Issue](https://github.com/ava-labs/builders-hub/issues/new/choose)
-  in this repository and thoroughly detail your request according to the issue template.
-  If urgent, please create a new ticket in the
-  [Dev Docs Improvement Proposals](https://github.com/orgs/ava-labs/projects/15/views/1)
-  dashboard.
-
-_Erroneous or missing information on documentation unrelated to a specific project needs
-editing:_
-
-- If you understand the issue enough to provide a correction, follow the steps
-  [here](https://github.com/ava-labs/builders-hub#quick-fixes).
-- If not, please raise an [Issue](https://github.com/ava-labs/builders-hub/issues/new/choose).
+[MIT](LICENSE)

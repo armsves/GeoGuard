@@ -163,3 +163,7 @@ content/docs/avalanche-l1s/validator-manager/contract.mdx
 content/docs/cross-chain/interchain-token-transfer/overview.mdx
 content/docs/nodes/chain-configs/p-chain.mdx
 content/docs/api-reference/c-chain/api.mdx
+
+.github/
+.next/
+.source/
